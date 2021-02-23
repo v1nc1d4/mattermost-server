@@ -223,7 +223,6 @@ func New(settings model.SqlSettings, metrics einterfaces.MetricsInterface) *SqlS
 	store.stores.post.(*SqlPostStore).createIndexesIfNotExists()
 	store.stores.thread.(*SqlThreadStore).createIndexesIfNotExists()
 	store.stores.user.(*SqlUserStore).createIndexesIfNotExists()
-	store.stores.bot.(*SqlBotStore).createIndexesIfNotExists()
 	store.stores.audit.(*SqlAuditStore).createIndexesIfNotExists()
 	store.stores.compliance.(*SqlComplianceStore).createIndexesIfNotExists()
 	store.stores.session.(*SqlSessionStore).createIndexesIfNotExists()
