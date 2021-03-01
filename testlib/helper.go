@@ -165,7 +165,7 @@ func (h *MainHelper) SetReplicationLagForTesting(seconds int) error {
 }
 
 func (h *MainHelper) execOnEachReplica(query string, args ...interface{}) error {
-	for _, replica := range h.SQLStore.Replicas() {
+	for _, replica := range h.SQLStore.Replicas {
 		_, err := replica.Exec(query, args...)
 		if err != nil {
 			return err
