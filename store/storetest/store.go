@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/mock"
 
+	"github.com/mattermost/gorp"
 	"github.com/mattermost/mattermost-server/v5/model"
 	"github.com/mattermost/mattermost-server/v5/store"
 	"github.com/mattermost/mattermost-server/v5/store/storetest/mocks"
@@ -102,7 +103,7 @@ func (s *Store) TotalMasterDbConnections() int         { return 1 }
 func (s *Store) TotalReadDbConnections() int           { return 1 }
 func (s *Store) TotalSearchDbConnections() int         { return 1 }
 func (s *Store) GetCurrentSchemaVersion() string       { return "" }
-func (s *Store) SetReplicationLagForTesting(int) error { return nil }
+func (s *Store) Replicas() []*gorp.DbMap               { return []*gorp.DbMap{} }
 func (s *Store) CheckIntegrity() <-chan model.IntegrityCheckResult {
 	return make(chan model.IntegrityCheckResult)
 }

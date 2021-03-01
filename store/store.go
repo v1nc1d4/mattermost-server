@@ -9,6 +9,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/mattermost/gorp"
 	"github.com/mattermost/mattermost-server/v5/model"
 )
 
@@ -68,7 +69,7 @@ type Store interface {
 	CheckIntegrity() <-chan model.IntegrityCheckResult
 	SetContext(context context.Context)
 	Context() context.Context
-	SetReplicationLagForTesting(seconds int) error
+	Replicas() []*gorp.DbMap
 }
 
 type TeamStore interface {

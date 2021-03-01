@@ -1423,35 +1423,6 @@ func VersionString(v int) string {
 	return strconv.Itoa(major) + "." + strconv.Itoa(minor)
 }
 
-func (ss *SqlStore) SetReplicationLagForTesting(seconds int) error {
-	if dn := ss.DriverName(); dn != model.DATABASE_DRIVER_MYSQL {
-		return fmt.Errorf("method not implemented for %q database driver, only %q is supported", dn, model.DATABASE_DRIVER_MYSQL)
-	}
-
-	err := ss.execOnEachReplica("STOP SLAVE SQL_THREAD FOR CHANNEL ''")
-	if err != nil {
-		return err
-	}
-
-	err = ss.execOnEachReplica(fmt.Sprintf("CHANGE MASTER TO MASTER_DELAY = %d", seconds))
-	if err != nil {
-		return err
-	}
-
-	err = ss.execOnEachReplica("START SLAVE SQL_THREAD FOR CHANNEL ''")
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (ss *SqlStore) execOnEachReplica(query string, args ...interface{}) error {
-	for _, replica := range ss.replicas {
-		_, err := replica.Exec(query, args...)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+func (ss *SqlStore) Replicas() []*gorp.DbMap {
+	return ss.replicas
 }

@@ -141,6 +141,39 @@ func (h *MainHelper) ToggleReplicasOn() {
 	h.SQLStore.UpdateLicense(lic)
 }
 
+func (h *MainHelper) SetReplicationLagForTesting(seconds int) error {
+	if dn := *h.Settings.DriverName; dn != model.DATABASE_DRIVER_MYSQL {
+		return fmt.Errorf("method not implemented for %q database driver, only %q is supported", dn, model.DATABASE_DRIVER_MYSQL)
+	}
+
+	err := h.execOnEachReplica("STOP SLAVE SQL_THREAD FOR CHANNEL ''")
+	if err != nil {
+		return err
+	}
+
+	err = h.execOnEachReplica(fmt.Sprintf("CHANGE MASTER TO MASTER_DELAY = %d", seconds))
+	if err != nil {
+		return err
+	}
+
+	err = h.execOnEachReplica("START SLAVE SQL_THREAD FOR CHANNEL ''")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (h *MainHelper) execOnEachReplica(query string, args ...interface{}) error {
+	for _, replica := range h.SQLStore.Replicas() {
+		_, err := replica.Exec(query, args...)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (h *MainHelper) setupResources() {
 	var err error
 	h.testResourcePath, err = SetupTestResources()

@@ -7,8 +7,10 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/mattermost/mattermost-server/v5/model"
+	gorp "github.com/mattermost/gorp"
 	mock "github.com/stretchr/testify/mock"
+
+	model "github.com/mattermost/mattermost-server/v5/model"
 
 	store "github.com/mattermost/mattermost-server/v5/store"
 
@@ -432,6 +434,22 @@ func (_m *Store) RecycleDBConnections(d time.Duration) {
 	_m.Called(d)
 }
 
+// Replicas provides a mock function with given fields:
+func (_m *Store) Replicas() []*gorp.DbMap {
+	ret := _m.Called()
+
+	var r0 []*gorp.DbMap
+	if rf, ok := ret.Get(0).(func() []*gorp.DbMap); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*gorp.DbMap)
+		}
+	}
+
+	return r0
+}
+
 // Role provides a mock function with given fields:
 func (_m *Store) Role() store.RoleStore {
 	ret := _m.Called()
@@ -483,20 +501,6 @@ func (_m *Store) Session() store.SessionStore {
 // SetContext provides a mock function with given fields: _a0
 func (_m *Store) SetContext(_a0 context.Context) {
 	_m.Called(_a0)
-}
-
-// SetReplicationLagForTesting provides a mock function with given fields: seconds
-func (_m *Store) SetReplicationLagForTesting(seconds int) error {
-	ret := _m.Called(seconds)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int) error); ok {
-		r0 = rf(seconds)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
 }
 
 // Status provides a mock function with given fields:
