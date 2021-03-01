@@ -5,6 +5,7 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"math"
 	"reflect"
 	"strconv"
@@ -68,7 +69,7 @@ func (f *FeatureFlagSynchronizer) EnsureReady() error {
 func (f *FeatureFlagSynchronizer) UpdateFeatureFlagValues(base model.FeatureFlags) model.FeatureFlags {
 	featuresMap := f.client.Treatments(f.ServerID, featureNames, f.Attributes)
 	featuresMapBytes, _ := json.Marshal(featuresMap)
-	f.Log.Debug("Updating feature flag values", mlog.String("map", string(featuresMapBytes)))
+	fmt.Println("featuresMap: " + string(featuresMapBytes))
 	ffm := featureFlagsFromMap(featuresMap, base)
 	return ffm
 }
